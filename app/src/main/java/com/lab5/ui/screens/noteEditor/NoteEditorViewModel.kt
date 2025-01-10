@@ -1,7 +1,5 @@
 package com.lab5.ui.screens.noteEditor
 
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lab5.backend.TagsManager
@@ -39,11 +37,10 @@ class NoteEditorViewModel(
                 val note = withContext(Dispatchers.IO) {
                     database.noteDao.getNoteById(id)
                 }
-                onResult(note) // Return the loaded note
+                onResult(note)
             } catch (e: Exception) {
-                // Handle errors (e.g., log or notify the user)
                 e.printStackTrace()
-                onResult(null) // Return null in case of error
+                onResult(null)
             }
         }
     }
@@ -59,18 +56,6 @@ class NoteEditorViewModel(
             tagsManager.removeTagFromNote(currentNote.id, tag.id)
         }
     }
-    fun getTagsFromNote(currentNote: NotesEntity): SnapshotStateList<TagsEntity> {
-        val tagsList = mutableStateListOf<TagsEntity>()
-
-        viewModelScope.launch {
-            tagsManager.getTagsForNoteFlow(currentNote.id).collect { tags ->
-                tagsList.clear()
-                tagsList.addAll(tags)
-            }
-        }
-        return tagsList
-    }
-
 
     fun insertNote(note: NotesEntity, onComplete: () -> Unit) {
         viewModelScope.launch {
@@ -78,9 +63,8 @@ class NoteEditorViewModel(
                 withContext(Dispatchers.IO) {
                     database.noteDao.insertNote(note)
                 }
-                onComplete() // Notify that insertion is complete
+                onComplete()
             } catch (e: Exception) {
-                // Handle errors (e.g., log or notify the user)
                 e.printStackTrace()
             }
         }
@@ -93,9 +77,8 @@ class NoteEditorViewModel(
                     database.noteDao.update(note)
                     database.noteTagDao.update(note)
                 }
-                onComplete() // Notify that update is complete
+                onComplete()
             } catch (e: Exception) {
-                // Handle errors (e.g., log or notify the user)
                 e.printStackTrace()
             }
         }

@@ -30,7 +30,7 @@ fun NavigationGraph(
         navController = navController,
         startDestination = SCREEN_NOTES_LIST
     ) {
-        // Notes List Screen
+
         composable(
             route = SCREEN_NOTES_LIST
         ) {
@@ -48,7 +48,7 @@ fun NavigationGraph(
             )
         }
 
-        // Edit Note Screen
+
         composable(
             route = "$SCREEN_EDIT_NOTE/{noteId}",
             arguments = listOf(navArgument("noteId") { type = NavType.IntType })
@@ -64,9 +64,8 @@ fun NavigationGraph(
             )
         }
 
-        // Add New Note Screen (NoteEditor)
         composable(
-            route = SCREEN_ADD_NOTE // This route will handle adding new notes
+            route = SCREEN_ADD_NOTE
         ) {
             val tagsManager: TagsManager = getKoin().get()
             NoteEditorScreen(

@@ -2,32 +2,20 @@ package com.lab5.ui.elements
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import com.lab5.backend.AlertManager
 import com.lab5.ui.theme.JetBrainsMono
 import com.lab5.ui.theme.TextMain
 import com.lab5.ui.theme.TextSecondary
 import org.koin.compose.getKoin
-import java.lang.reflect.Modifier
 import androidx.compose.runtime.*
-import androidx.compose.foundation.clickable
 import com.lab5.backend.toAlarmState
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.compose.foundation.layout.*
 import androidx.compose.ui.unit.sp
 import com.lab5.ui.theme.DangerColor
 import com.lab5.ui.theme.MainColor

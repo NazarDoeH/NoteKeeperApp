@@ -14,11 +14,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.sp
-
-import com.lab5.backend.TagsManager
 import com.lab5.data.database.entity.TagsEntity
 import com.lab5.ui.theme.BackgroundSecondary
 import com.lab5.ui.theme.JetBrainsMono

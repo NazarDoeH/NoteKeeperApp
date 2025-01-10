@@ -1,8 +1,6 @@
 package com.lab5.backend
 
 import com.lab5.data.sever_api.ServerAPI
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
