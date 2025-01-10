@@ -1,6 +1,7 @@
 package com.lab5
 
 import android.app.Application
+import com.lab5.backend.AlertManager
 import com.lab5.di.appModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger

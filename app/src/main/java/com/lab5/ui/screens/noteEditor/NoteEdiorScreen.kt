@@ -1,41 +1,25 @@
 package com.lab5.ui.screens.noteEditor
 
-import android.content.ClipData.Item
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.room.util.splitToIntList
 import com.lab5.backend.TagsManager
 import com.lab5.data.database.entity.NotesEntity
 import com.lab5.data.database.entity.TagsEntity
-import com.lab5.ui.elements.NewTagOverlay
-import com.lab5.ui.elements.NoteCard
-import com.lab5.ui.elements.TagChip
-import com.lab5.ui.elements.TagChipNoteEditor
-import com.lab5.ui.elements.TagSelectionOverlay
+import com.lab5.ui.elements.TagsSection
 import com.lab5.ui.theme.BackgroundMain
 import com.lab5.ui.theme.JetBrainsMono
-import com.lab5.ui.theme.MainColor
 import com.lab5.ui.theme.TextMain
 import com.lab5.ui.theme.TextSecondary
 import java.sql.Date
@@ -72,9 +56,14 @@ fun NoteEditorScreen(
         val currentNote = note!!
         var title by remember { mutableStateOf(currentNote.title) }
         var text by remember { mutableStateOf(currentNote.text) }
-
         val appliedTags = remember { mutableStateListOf<TagsEntity>() } // Список вибраних тегів
-        var showNewTagOverlay by remember { mutableStateOf(false) }
+
+        LaunchedEffect(currentNote.id) {
+            tagsManager.getTagsForNoteFlow(currentNote.id).collect { tags ->
+                appliedTags.clear() // Clear previous tags
+                appliedTags.addAll(tags) // Add the new tags
+            }
+        }
 
         Box(
             modifier = Modifier
@@ -137,39 +126,19 @@ fun NoteEditorScreen(
                 Spacer(modifier = Modifier.height(4.dp))
 
                 // Tags Section
-                Row {
-                    Button(onClick = { showNewTagOverlay = true }) {
-                        Text(
-                            text = "Tags",
-                            fontFamily = JetBrainsMono,
-                            color = TextMain,
-                            fontSize = 18.sp,
-                            modifier = Modifier.padding(8.dp)
-                        )
-                    }
-                    LazyRow {
-                        items(tags) { tag ->
-                            TagChip(tag, true, {})
+                TagsSection(
+                    tags = tags,
+                    appliedTags = appliedTags,
+                    onTagSelected = { tag ->
+                        if (appliedTags.contains(tag)) {
+                            viewModel.deleteTagFromNote(currentNote, tag)
+                            appliedTags.remove(tag) // Remove tag
+                        } else {
+                            viewModel.addTagToNote(currentNote, tag)
+                            appliedTags.add(tag) // Add tag
                         }
                     }
-                }
-
-                // New tag overlay
-                if (showNewTagOverlay) {
-                    TagSelectionOverlay(
-                        tagsManager = tagsManager,
-                        appliedTags = appliedTags, // Список вже застосованих тегів
-                        onTagSelected = { tag ->
-                            if (appliedTags.contains(tag)) {
-                                appliedTags.remove(tag) // Видаляє тег
-                            } else {
-                                appliedTags.add(tag) // Додає тег
-                            }
-                        },
-                        onDismiss = { showNewTagOverlay = false }
-                    )
-                }
-
+                )
                 BasicTextField(
                     value = text,
                     textStyle = LocalTextStyle.current.copy(color = TextMain, fontFamily = JetBrainsMono),

@@ -32,17 +32,20 @@ val appModule = module {
         get<Retrofit>().create()
     }
 
+    // AlertManager instance
+    single { AlertManager(get()) }
+
     // Database Module
     single<NotekeeperDatabase> {
         Room.databaseBuilder(
             get<Context>(),
             NotekeeperDatabase::class.java, "NotekeeperDatabase"
         )
-            .fallbackToDestructiveMigration() // For development purposes, replace with migrations for production
+            .fallbackToDestructiveMigration()
             .build()
     }
 
-    single { AlertManager() }
+    // TagsManager instance
     single { TagsManager(get()) }
 
     // ViewModel Module

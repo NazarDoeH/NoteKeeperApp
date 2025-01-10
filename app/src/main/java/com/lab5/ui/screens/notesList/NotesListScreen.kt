@@ -25,6 +25,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.lab5.backend.Region
 import com.lab5.data.database.db.NotekeeperDatabase
@@ -57,9 +58,8 @@ fun NotesListScreen(
             .background(BackgroundMain)
     ) {
         Spacer(modifier = Modifier.height(8.dp))
-        // Стан тривог в регіоні лаб 5 використання API
-        RegionInfoColumn(regionName, regionState)
-        // Список тегів
+        RegionInfoColumn(regionName, regionState, uid = 27, context = LocalContext.current)
+        Spacer(Modifier.height(8.dp))
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -72,7 +72,7 @@ fun NotesListScreen(
             )
             {
                 Icon(
-                    imageVector = Icons.Default.Edit, // Replace with your desired icon
+                    imageVector = Icons.Default.Edit,
                     contentDescription = "Icon",
                     modifier = Modifier
                         .size(35.dp)

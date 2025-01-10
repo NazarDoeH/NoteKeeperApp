@@ -11,7 +11,4 @@ val BackgroundSecondary = Color(0xFF1C1C1C)
 val TextMain = Color(0xFFFFFFFF)
 val TextSecondary = Color(0xFF989898)
 val MainColor = Color(0xFF70A450)
-
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+val DangerColor = Color(0xFFA45074)

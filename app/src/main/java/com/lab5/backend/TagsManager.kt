@@ -21,6 +21,10 @@ class TagsManager(private val database: NotekeeperDatabase) {
         return database.tagDao.getAllTags()
     }
 
+    suspend fun removeTagFromNote(noteId: Int, tagId: Int) {
+        database.noteTagDao.deleteNoteTag(TagsNotesEntity(tagId = tagId, noteId = noteId))
+    }
+
     suspend fun addTagForNote(noteId: Int, tagId: Int) {
         database.noteTagDao.insertNoteTag(TagsNotesEntity(tagId = tagId, noteId = noteId))
     }

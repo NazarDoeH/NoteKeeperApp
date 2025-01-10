@@ -33,6 +33,7 @@ class NotesListViewModel(
     val selectedTagsStateFlow: StateFlow<Set<Int>> get() = _selectedTagsStateFlow
 
     init {
+        _selectedTagsStateFlow.value = emptySet()
         loadDB()
         viewModelScope.launch {
             preloadData()

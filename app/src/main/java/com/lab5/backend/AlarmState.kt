@@ -6,11 +6,11 @@ enum class AlarmState(val id: Int) {
     Dangerous(2)
 }
 
-fun String.toAlarmState(): AlarmState {
+fun String.toAlarmState(): String {
     return when (this) {
-        "A" -> AlarmState.Dangerous
-        "P" -> AlarmState.PartiallySafe
-        "N" -> AlarmState.Safe
-        else -> AlarmState.Safe
+        "A" -> "Небезпека"
+        "P" -> "Часткова небезпека в регіонах"
+        "N" -> "Безпечно"
+        else -> "Немає інформації"
     }
 }

@@ -1,19 +1,18 @@
 package com.lab5.ui.screens.noteEditor
 
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lab5.backend.TagsManager
-import com.lab5.data.database.dao.TagsNotesDao
 import com.lab5.data.database.entity.NotesEntity
 import com.lab5.data.database.db.NotekeeperDatabase
 import com.lab5.data.database.entity.TagsEntity
-import com.lab5.data.database.entity.TagsNotesEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.sql.Date
 
 class NoteEditorViewModel(
     private val database: NotekeeperDatabase,
@@ -24,47 +23,82 @@ class NoteEditorViewModel(
     val tagsStateFlow: StateFlow<List<TagsEntity>> get() = _tagsStateFlow
 
     init {
-        // Launching a coroutine inside ViewModel scope to call suspending function
         viewModelScope.launch {
-            tagsManager.getTagsForNoteFlow(1) // Calling suspending function
+            try {
+                tagsManager.getAllTagsFlow().collect { tags ->
+                    _tagsStateFlow.value = tags
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
-
-    // Function to load a note by id
     fun getNoteById(id: Int, onResult: (NotesEntity?) -> Unit) {
-        viewModelScope.launch(Dispatchers.IO) {
-            // Perform database query on the IO dispatcher
-            val note = database.noteDao.getNoteById(id)
-
-            // Ensure UI updates are done on the main thread
-            withContext(Dispatchers.Main) {
-                onResult(note)  // Update the UI
+        viewModelScope.launch {
+            try {
+                val note = withContext(Dispatchers.IO) {
+                    database.noteDao.getNoteById(id)
+                }
+                onResult(note) // Return the loaded note
+            } catch (e: Exception) {
+                // Handle errors (e.g., log or notify the user)
+                e.printStackTrace()
+                onResult(null) // Return null in case of error
             }
         }
     }
+    fun addTagToNote(currentNote: NotesEntity, tag: TagsEntity)
+    {
+        viewModelScope.launch {
+            tagsManager.addTagForNote(currentNote.id, tag.id)
+        }
+    }
+    fun deleteTagFromNote(currentNote: NotesEntity, tag: TagsEntity)
+    {
+        viewModelScope.launch {
+            tagsManager.removeTagFromNote(currentNote.id, tag.id)
+        }
+    }
+    fun getTagsFromNote(currentNote: NotesEntity): SnapshotStateList<TagsEntity> {
+        val tagsList = mutableStateListOf<TagsEntity>()
 
-    // Function to insert a new note
+        viewModelScope.launch {
+            tagsManager.getTagsForNoteFlow(currentNote.id).collect { tags ->
+                tagsList.clear()
+                tagsList.addAll(tags)
+            }
+        }
+        return tagsList
+    }
+
+
     fun insertNote(note: NotesEntity, onComplete: () -> Unit) {
-        viewModelScope.launch(Dispatchers.IO) {
-            // Perform database insertion on the IO dispatcher
-            database.noteDao.insertNote(note)
-            // Ensure UI updates are done on the main thread
-            withContext(Dispatchers.Main) {
-                onComplete()  // Notify that the insertion is complete
+        viewModelScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    database.noteDao.insertNote(note)
+                }
+                onComplete() // Notify that insertion is complete
+            } catch (e: Exception) {
+                // Handle errors (e.g., log or notify the user)
+                e.printStackTrace()
             }
         }
     }
 
-    // Function to update an existing note
     fun updateNote(note: NotesEntity, onComplete: () -> Unit) {
-        viewModelScope.launch(Dispatchers.IO) {
-            // Perform database update on the IO dispatcher
-            database.noteDao.update(note)
-
-            // Ensure UI updates are done on the main thread
-            withContext(Dispatchers.Main) {
-                onComplete()  // Notify that the update is complete
+        viewModelScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    database.noteDao.update(note)
+                    database.noteTagDao.update(note)
+                }
+                onComplete() // Notify that update is complete
+            } catch (e: Exception) {
+                // Handle errors (e.g., log or notify the user)
+                e.printStackTrace()
             }
         }
     }
 }
+

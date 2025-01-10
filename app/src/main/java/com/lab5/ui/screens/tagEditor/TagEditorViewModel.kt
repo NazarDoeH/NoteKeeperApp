@@ -20,4 +20,18 @@ class TagEditorViewModel(
 
 
     val tags: Flow<List<TagsEntity>> = database.tagDao.getAllTags()
+
+    fun deleteTag(tag: TagsEntity) {
+        viewModelScope.launch {
+            tagsManager.deleteTag(tag)
+        }
+    }
+
+    fun addTag(name: String) {
+        viewModelScope.launch {
+            if(name != "") {
+                tagsManager.addNewTag(name)
+            }
+        }
+    }
 }

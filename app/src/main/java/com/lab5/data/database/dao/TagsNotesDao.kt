@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 import com.lab5.data.database.entity.NotesEntity
 import com.lab5.data.database.entity.TagsEntity
 import com.lab5.data.database.entity.TagsNotesEntity
@@ -18,6 +19,9 @@ interface TagsNotesDao {
 
     @Delete
     suspend fun deleteNoteTag(noteTag: TagsNotesEntity)
+
+    @Query("DELETE FROM NoteTags WHERE note_id = :noteId")
+    suspend fun deleteNoteTagsForNoteId(noteId: Int)
 
     @Query(
         """
@@ -38,4 +42,7 @@ interface TagsNotesDao {
         """
     )
     fun getTagsForNoteIdFlow(noteId: Int): Flow<List<TagsEntity>>
+
+    @Update
+    suspend fun update(note: NotesEntity)
 }

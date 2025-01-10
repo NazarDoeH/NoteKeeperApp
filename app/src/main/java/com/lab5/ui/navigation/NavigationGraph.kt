@@ -83,7 +83,7 @@ fun NavigationGraph(
         ){
             TagEditorScreen(
                 viewModel = getViewModel(),
-                onSave = { navController.popBackStack() }
+                back = { navController.popBackStack() }
             )
         }
     }
